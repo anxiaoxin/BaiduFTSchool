@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>鼠标悬停模糊效果</title>
+	<style>
+		/*设置基本布局*/
+		.content{
+			display: flex;
+			justify-content: center;
+		} 
+		.imgContainer{
+			padding: 10px;
+		}  
+		img#mainImg{
+			width: 1000px;
+		}
+		
+		 /*图片虚化*/
+		.imgContainer:hover{
+			opacity: 0.2;
+		}
+
+		img#mainImg:hover{
+			box-shadow: 0 0 10px;
+		}
+		
+		/*设置小图片的布局*/
+		.littleimgdiv{
+			width: 392px;
+			position: absolute;
+			top: 86px;
+		} 
+
+		/*利用伪元素达到边框从中间向两边扩散的效果：
+			分别利用before与after伪元素，被通过改变before元素的top与height属性改变after元素的left与width属性达到从中间向两边扩散的效果。
+		*/
+		.border::before,.border::after{
+			content: " ";
+			width: 0;
+			height: 0;
+			display: block;
+			position: absolute;
+			box-sizing: border-box;
+			transition-property:width,height,left,top;
+			transition-duration: 0.5s;
+			transition-timing-function: ease-in;
+		}
+
+		.border::before{
+			width: 100%;
+			top: 50%;
+		}
+
+		.imgContainer:hover + .littleimgdiv > .border::before{
+			top: 0;
+			height: 100%;
+			border: 4px solid black;
+			border-top-color: transparent;
+			border-bottom-color: transparent;
+		}
+
+		.border::after{
+			top: 0;
+			height: 100%;
+			left: 50%;
+		}
+
+		.imgContainer:hover + .littleimgdiv > .border::after{
+			left: 0;
+			width: 100%;
+			border: 4px solid black;
+			border-left-color: transparent;
+			border-right-color: transparent;
+		}		
+		.imgContainer:hover + .littleimgdiv + .fontdiv{
+			display: block;
+		}
+
+		/*设置光影流动文字：
+			利用背景图像的渐变色属性，设置交替变换的颜色背景，然后利用-webkit-background-clop:text;属性设置背景图像在文字下显示，然后使用-webkit-text-fill-color:tranparent;
+			属性设置文字为透明色。接下来改变背景图像的尺寸，拉大其宽度，然后利用背景位置的改变来达到效果。
+			*/
+		@keyframes streamer {
+		    0%  {
+		        background-position: 0 0;
+		    }
+		    100% {
+		        background-position: -100% 0;
+		    }
+		}		
+		span{
+			background-image: -webkit-linear-gradient(left,black,white 25%, black 50%,white 75%,black 100%);
+			font-weight: bolder;
+			font-size: 30px;
+			-webkit-background-clip:text;
+			background-size: 200% 100%;
+			animation:streamer 5s infinite linear;
+			-webkit-text-fill-color:transparent;
+		}		
+		.fontdiv{
+			position: absolute;
+			top: 50px;
+			display: none;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="content">
+		<div class="imgContainer">
+			<img id="mainImg" src="truelove.jpg" alt="一生所爱">
+		</div>
+		<div class="littleimgdiv">
+			<div class="border">
+				<img id="littleimg" src="font.png" alt="一生所爱">
+			</div>
+		</div>
+		<div class="fontdiv">
+			<span>一生所爱</span>
+		</div>		
+	</div>
+
+</body>
+</html>
